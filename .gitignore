@@ -1,0 +1,12 @@
+*.o
+*.d
+*.bin
+*.dmp
+*.elf
+*.hex
+*.list
+*.map
+*.lst
+software/.cproject
+software/.project
+software/.settings
