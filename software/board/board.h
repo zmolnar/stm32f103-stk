@@ -89,10 +89,6 @@
 
 /*
  * Port A setup.
- * Everything input with pull-up except:
- * PA0  - Normal input      (BUTTON).
- * PA2  - Alternate output  (USART2 TX).
- * PA3  - Normal input      (USART2 RX).
  */
 #define VAL_GPIOACRL            0x88884B84      /*  PA7...PA0 */
 #define VAL_GPIOACRH            0x88888888      /* PA15...PA8 */
@@ -100,13 +96,6 @@
 
 /*
  * Port B setup.
- * Everything input with pull-up except:
- * PB6,7   - Alternate open drain (I2C1).
- * PB10,11 - Alternate open drain (I2C2).
- * PB12    - Push Pull output  (MMC SPI2 NSS).
- * PB13    - Alternate output  (MMC SPI2 SCK).
- * PB14    - Normal input      (MMC SPI2 MISO).
- * PB15    - Alternate output  (MMC SPI2 MOSI).
  */
 #define VAL_GPIOBCRL            0xEE888888      /*  PB7...PB0 */
 #define VAL_GPIOBCRH            0xB4B3EE88      /* PB15...PB8 */
@@ -114,14 +103,6 @@
 
 /*
  * Port C setup.
- * Everything input with pull-up except:
- * PC4  - Normal input because there is an external resistor.
- * PC5  - Analog input (joystick).
- * PC6  - Normal input because there is an external resistor.
- * PC7  - Normal input because there is an external resistor.
- * PC10 - Push Pull output (CAN CNTRL).
- * PC11 - Push Pull output (USB DISC).
- * PC12 - Open Drain output (LED).
  */
 #define VAL_GPIOCCRL            0x44048888      /*  PC7...PC0 */
 #define VAL_GPIOCCRH            0x88863388      /* PC15...PC8 */
