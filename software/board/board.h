@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2015 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -95,7 +95,7 @@
  * PA3  - Normal input      (USART2 RX).
  */
 #define VAL_GPIOACRL            0x88884B84      /*  PA7...PA0 */
-#define VAL_GPIOACRH            0x888BB888      /* PA15...PA8 */
+#define VAL_GPIOACRH            0x88888888      /* PA15...PA8 */
 #define VAL_GPIOAODR            0xFFFFFFFF
 
 /*
