@@ -1,8 +1,8 @@
 # List of all the board related files.
-BOARDSRC = ${CHIBIOS}/os/hal/boards/OLIMEX_STM32_103STK/board.c
+BOARDSRC = ${BOARD}/board.c
 
 # Required include directories
-BOARDINC = ${CHIBIOS}/os/hal/boards/OLIMEX_STM32_103STK
+BOARDINC = ${BOARD}
 
 # Shared variables
 ALLCSRC += $(BOARDSRC)

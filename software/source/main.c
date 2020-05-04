@@ -33,6 +33,13 @@ static THD_FUNCTION(Thread1, arg) {
   }
 }
 
+const SPIConfig epdSpiConfig = {
+    .end_cb = NULL,
+    .ssport = GPIOB,
+    .sspad  = GPIOB_SPI2_NSS,
+    .cr1    = (((0x2 << 3) & SPI_CR1_BR) | SPI_CR1_MSTR),
+};
+
 /*
  * Application entry point.
  */
@@ -52,6 +59,46 @@ int main(void) {
    * Creates the blinker thread.
    */
   chThdCreateStatic(waThread1, sizeof(waThread1), NORMALPRIO, Thread1, NULL);
+
+  spiObjectInit(&SPID2);
+  spiStart(&SPID2, &epdSpiConfig);
+
+  // Power ON
+  palSetPad(GPIOB, GPIOB_EPD_VCC_EN);
+  chThdSleepMilliseconds(100);
+
+  palClearPad(GPIOB, GPIOB_EPD_VCC_EN);
+  spiUnselect(&SPID2);
+  palSetPad(GPIOA, GPIOA_EPD_RESET);
+  chThdSleepMilliseconds(5);
+  
+  palClearPad(GPIOA, GPIOA_EPD_RESET);
+  chThdSleepMilliseconds(5);
+
+  palSetPad(GPIOA, GPIOA_EPD_RESET);
+  chThdSleepMilliseconds(5);
+
+  // Initialize
+  bool busy = true;
+  while(busy) {
+    busy = PAL_HIGH == palReadPad(GPIOA, GPIOA_EPD_BUSY);
+    chThdSleepMilliseconds(1);
+  }
+
+  // Read COG ID
+  uint8_t cmd[] = {0x71};
+  uint8_t id = 0;
+  spiSelect(&SPID2);
+  spiSend(&SPID2, 1, cmd);
+  spiReceive(&SPID2, 1, &id);
+  spiUnselect(&SPID2);
+
+  if (0x12 == id) {
+    chThdSleepMilliseconds(100);
+  } else {
+    chThdSleepMilliseconds(200);
+  }
+
 
   /*
    * Normal main() thread activity, in this demo it does nothing except
