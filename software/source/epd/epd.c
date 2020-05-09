@@ -229,20 +229,26 @@ void EPD_Initialize(void)
   EPD_Write(cmd, wrdata, 1);
 }
 
-void EPD_UpdateDisplay(uint8_t oldimage[128][144/8], uint8_t newimage[128][144/8])
+void EPD_UpdateDisplay(const uint8_t oldimage[128][144/8], const uint8_t newimage[128][144/8])
 {
   size_t i = 0;
-  for(i = 0; i < 14; ++i)
+  for(i = 0; i < 24; ++i)
     EPD_WriteFrame(oldimage, EPD_STAGE_1);
 
-  for(i = 0; i < 14; ++i)
+  for(i = 0; i < 24; ++i)
     EPD_WriteFrame(oldimage, EPD_STAGE_2);
 
-  for(i = 0; i < 14; ++i)
+  for(i = 0; i < 24; ++i)
     EPD_WriteFrame(newimage, EPD_STAGE_3);   
 
-  for(i = 0; i < 14; ++i)
+  for(i = 0; i < 24; ++i)
     EPD_WriteFrame(newimage, EPD_STAGE_4);          
+}
+void EPD_PartialUpdate(const uint8_t oldimage[128][144/8], const uint8_t newimage[128][144/8])
+{
+  size_t i = 0;
+  for(i = 0; i < 12; ++i)
+    EPD_WritePartialUpdateFrame(oldimage, newimage);
 }
 
 void EPD_PowerOff(void)

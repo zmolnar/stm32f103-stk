@@ -94,9 +94,13 @@ void EPD_CreateDataBytes(uint8_t byte, EPD_Stage_t stage, uint8_t *pd1, uint8_t 
   }
 }
 
+#include "ch.h"
+
 void EPD_WriteFrame(const uint8_t image[128][144 / 8], EPD_Stage_t stage)
 {
   EPD_Line_t line;
+
+  systime_t start = chVTGetSystemTime();
 
   uint8_t border = (EPD_STAGE_4 == stage) ? 0xAA : 0x00;
 
@@ -114,6 +118,57 @@ void EPD_WriteFrame(const uint8_t image[128][144 / 8], EPD_Stage_t stage)
       uint8_t *pd2 = &line.line.data[2 * x + 1];
 
       EPD_CreateDataBytes(b, stage, pd1, pd2);
+    }
+
+    EPD_Write(0x0a, line.bytes.data, sizeof(line.bytes.data));
+
+    // Turn on OE
+    uint8_t cmd  = 0x02;
+    uint8_t data = 0x07;
+    EPD_Write(cmd, &data, 1);
+  }
+
+  systime_t end = chVTGetSystemTime();
+}
+
+void EPD_WritePartialUpdateFrame(const uint8_t old[128][144 / 8], const uint8_t new[128][144 / 8])
+{
+  EPD_Line_t line;
+
+  uint8_t border = 0xAA;
+
+  size_t y = 0;
+  for (y = 0; y < 128; ++y) {
+    memset(&line, 0, sizeof(line));
+
+    EPD_setScanByte(&line, y);
+    line.line.border = border;
+
+    size_t x = 0;
+    for (x = 0; x < (144 / 8); ++x) {
+      uint8_t bo = old[y][(144 / 8) - x - 1];
+      uint8_t bn = new[y][(144 / 8) - x - 1];
+
+      uint8_t *pd1 = &line.line.data[2 * x];
+      uint8_t *pd2 = &line.line.data[2 * x + 1];
+
+      size_t i = 0;
+      for (i = 0; i < 8; ++i) {
+        uint8_t mask = 0x01 << i;
+
+        EPD_PixelColor_t pixel;
+        if ((bo & mask) == (bn & mask))
+          pixel = EPD_PIXEL_NOTHING;
+        else if (bn & mask)
+          pixel = EPD_PIXEL_BLACK;
+        else
+          pixel = EPD_PIXEL_WHITE;
+
+        if (i < 4)
+          *pd1 |= ((uint8_t)pixel) << (((4 - i) * 2) - 2);
+        else
+          *pd2 |= ((uint8_t)pixel) << (((8 - i) * 2) - 2);
+      }
     }
 
     EPD_Write(0x0a, line.bytes.data, sizeof(line.bytes.data));

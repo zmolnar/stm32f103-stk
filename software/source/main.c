@@ -21,6 +21,9 @@
 #include "epd.h"
 #include <string.h>
 
+#include "paraglider.h"
+#include "paraglider2.h"
+
 /*
  * Green LED blinker thread, times are in milliseconds.
  */
@@ -76,28 +79,29 @@ int main(void)
   EPD_Initialize();
 
   memset(bufA, 0, sizeof(bufA));
-  memset(bufB, 0, sizeof(bufB));
-
-  size_t y;
-  for (y = 0; y < 128; ++y)
-  {
-    size_t x;
-    for (x = 0; x < (144/8); ++x)
-    {
-      if (y % 2)
-        bufB[y][x] = 0xAA;
-      else
-        bufB[y][x] = 0x55;  
-    }
-  }
 
   systime_t start = chVTGetSystemTime();
-  EPD_UpdateDisplay(bufA, bufB);
+  EPD_UpdateDisplay(bufA, paraglider);
   systime_t end = chVTGetSystemTime();
+
+  size_t n = 0;
+  while (n < 15) {
+    if (n % 2) {
+      EPD_PartialUpdate(paraglider, paraglider2);
+    } else {
+      EPD_PartialUpdate(paraglider2, paraglider);
+    }
+
+    n++;
+
+    chThdSleepSeconds(1);
+  }
+
+  EPD_UpdateDisplay(paraglider, paraglider);
+  EPD_UpdateDisplay(paraglider, paraglider);
 
   EPD_PowerOff();
 
-  sysinterval_t diff = TIME_I2MS(end - start);
 
   /*
    * Normal main() thread activity, in this demo it does nothing except

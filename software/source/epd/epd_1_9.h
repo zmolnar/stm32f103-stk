@@ -55,6 +55,7 @@ typedef struct EPD_Line_s {
 void EPD_setScanByte(EPD_Line_t *pline, size_t i);
 void EPD_CreateDataByte(uint8_t byte, EPD_Stage_t stage, uint8_t *pd1, uint8_t *pd2);
 void EPD_WriteFrame(const uint8_t image[128][144 / 8], EPD_Stage_t stage);
+void EPD_WritePartialUpdateFrame(const uint8_t old[128][144 / 8], const uint8_t new[128][144 / 8]);
 void EPD_WriteNothingFrame(void);
 void EPD_WriteBorderDummyLine(void);
 

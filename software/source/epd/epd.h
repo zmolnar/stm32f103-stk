@@ -41,7 +41,8 @@ void EPD_Write(uint8_t cmd, const uint8_t data[], size_t length);
 void EPD_Read(uint8_t cmd, uint8_t data[], size_t length);
 void EPD_PowerOn(void);
 void EPD_Initialize(void);
-void EPD_UpdateDisplay(uint8_t oldimage[128][144/8], uint8_t newimage[128][144/8]);
+void EPD_UpdateDisplay(const uint8_t oldimage[128][144/8], const uint8_t newimage[128][144/8]);
+void EPD_PartialUpdate(const uint8_t old[128][144 / 8], const uint8_t new[128][144 / 8]);
 void EPD_PowerOff(void);
 
 #endif /* EPD_H */
